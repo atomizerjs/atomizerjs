@@ -10,7 +10,10 @@ U.fn2(a,b) = function(){};
 U.fn5(a,b) = function(){};
 ```
 
-- Supports partial build with version checking and check if function is implemented or not
+- Allows **partial builds**
+- :arrows_clockwise: Auto-generates **recompilation command** at 1st line
+- Checks **version mismatch**
+- Checks **key :left_right_arrow: implementation mismatch**
 - Supports **function prototyping**
 - Plays well with both **browser** and **node** enviroment
-- :eyeglasses: Build is well readable API reference
+- :eyeglasses: Build is well **readable API** reference
