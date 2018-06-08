@@ -15,5 +15,5 @@ U.fn5(a,b) = function(){};
 - Checks **version mismatch**
 - Checks **key :left_right_arrow: implementation mismatch**
 - Supports **function prototyping**
-- Plays well with both **browser** and **node** enviroment
+- Plays well with both **browser** and **node** enviroments
 - :eyeglasses: Build is well **readable API** reference
