@@ -17,3 +17,5 @@ U.fn5(a,b) = function(){};
 - Supports **function prototyping**
 - Plays well with both **browser** and **node** enviroments
 - :eyeglasses: Build is well **readable API** reference
+
+[Example of usage](https://github.com/tomassentkeresty/utilizerjs/blob/h/compile.js)
