@@ -2,42 +2,43 @@ var fs = require('fs');
 var path = require('path');
 
 exports.compileUtils = function(version, filePaths, accessVariable, keys, out) {
-    fs.stat('../../package.json', function(err) {
-        if (err) {
-            throw new Error("Missing './package.json'.");
-        }
-        var v = require('../../package.json').version; // eslint-disable-line import/no-unresolved
-        if (!v) {
-            throw new Error("Missing version in './package.json'.");
-        }
-        if (version && v !== version) {
-            throw new Error('versionMismatch');
-        }
-        if (!Array.isArray(filePaths) || filePaths.length === 0) {
-            throw new Error('invalidParameter');
-        }
-        if (!accessVariable || typeof(accessVariable) !== 'string') {
-            throw new Error('invalidParameter');
-        }
-        if (keys && !Array.isArray(keys)) {
-            throw new Error('invalidParameter');
-        }
-        if (!out || typeof(out) !== 'string') {
-            throw new Error('invalidParameter');
-        }
-        var start = Date.now();
-        filePaths = normalizePaths(filePaths);
-        var o = toSingleObj(filePaths);
-        var accKeys = [];
-        var b = toBundleStr(o, keys, accessVariable, accKeys);
-        var code = fs.readFileSync(path.join(__dirname, 'template.js'), 'utf8');
-        code = code.replace(/ACCESS_VAR/g, accessVariable);
-        code = replaceUtils(code, b);
-        code = code.replace(/\{0\}/, v);
-        code = code.replace(/\{1\}/, accKeys.join(','));
-        fs.writeFileSync(out, code);
-        endLog(out, start, code);
-    });
+    try {
+        fs.fstatSync('../../package.json');
+    }
+    catch (e) {
+        throw new Error("Missing './package.json'.");
+    }
+    var v = require('../../package.json').version; // eslint-disable-line import/no-unresolved
+    if (!v) {
+        throw new Error("Missing version in './package.json'.");
+    }
+    if (version && v !== version) {
+        throw new Error('versionMismatch');
+    }
+    if (!Array.isArray(filePaths) || filePaths.length === 0) {
+        throw new Error('invalidParameter');
+    }
+    if (!accessVariable || typeof(accessVariable) !== 'string') {
+        throw new Error('invalidParameter');
+    }
+    if (keys && !Array.isArray(keys)) {
+        throw new Error('invalidParameter');
+    }
+    if (!out || typeof(out) !== 'string') {
+        throw new Error('invalidParameter');
+    }
+    var start = Date.now();
+    filePaths = normalizePaths(filePaths);
+    var o = toSingleObj(filePaths);
+    var accKeys = [];
+    var b = toBundleStr(o, keys, accessVariable, accKeys);
+    var code = fs.readFileSync(path.join(__dirname, 'template.js'), 'utf8');
+    code = code.replace(/ACCESS_VAR/g, accessVariable);
+    code = replaceUtils(code, b);
+    code = code.replace(/\{0\}/, v);
+    code = code.replace(/\{1\}/, accKeys.join(','));
+    fs.writeFileSync(out, code);
+    endLog(out, start, code);
 };
 function replaceUtils(code, utils) { // CODE CAN CONTAIN SPECIAL CHARS LIKE $ WHICH HAVE TO BE REPLACED WITH $$, THEREFORE SAFER AND SIMPLER SPLIT METHOD IS USED.
     var arr = code.split(/^\s*UTILS/m);
