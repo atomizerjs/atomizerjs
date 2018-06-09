@@ -2,15 +2,16 @@ var fs = require('fs');
 var path = require('path');
 
 exports.compileUtils = function(version, filePaths, accessVariable, keys, out) {
+    var v;
+    var pkg = '../../package.json';
     try {
-        fs.fstatSync('../../package.json');
+        v = require(pkg).version;
     }
     catch (e) {
-        throw new Error("Missing './package.json'.");
+        throw new Error('Missing "' + pkg + '".');
     }
-    var v = require('../../package.json').version; // eslint-disable-line import/no-unresolved
     if (!v) {
-        throw new Error("Missing version in './package.json'.");
+        throw new Error('Missing version in "' + pkg + '".');
     }
     if (version && v !== version) {
         throw new Error('versionMismatch');
