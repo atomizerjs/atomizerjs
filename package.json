@@ -10,7 +10,7 @@
         "type": "git",
         "url": "git+https://github.com/atomizerjs/atomizerjs.git"
     },
-    "author": "Tomas Sentkeresty",
+    "author": "Tomas Sentkeresty <tsentkeresty@gmail.com>",
     "license": "MIT",
     "bugs": {
         "url": "https://github.com/atomizerjs/atomizerjs/issues"
