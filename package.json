@@ -1,6 +1,6 @@
 {
     "name": "atomizerjs",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "description": "Compile utilities to single object, one utility per line",
     "main": "index.js",
     "scripts": {
