@@ -1,7 +1,7 @@
 {
     "name": "atomizerjs",
-    "version": "1.2.0",
-    "description": "Compile utilities to single object, one utility per line",
+    "version": "1.3.0",
+    "description": "Compile one utility per line",
     "main": "index.js",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1"
