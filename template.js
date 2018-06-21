@@ -1,5 +1,5 @@
 /*
     v={0} keys={1} node compile
 */
-var $$ = typeof(exports) === 'object' ? exports : window;
+var $$ = typeof(global) === 'object' ? global : window;
 UTILS
