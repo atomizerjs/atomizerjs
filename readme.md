@@ -7,9 +7,9 @@
     v=x.x.x keys=fn1,fn2,fn5 node compile
 */
 var $$ = typeof(global) === 'object' ? global : window;
-$$.fn1(a,b) = function(){};$$.fn1.prototype={}; // (function|string|number|object|date)
-$$.fn2(a,b) = function(){};
-$$.fn5(a,b) = function(){};
+$$.fn1 = function(a,b){};$$.fn1.prototype={}; // (function|string|number|object|date)
+$$.fn2 = function(a,b){};
+$$.fn5 = function(a,b){};
 ```
 
 - Allows partial builds
