@@ -1,6 +1,5 @@
 /*
     v={0} keys={1} node compile
 */
-var ACCESS_VAR = {};
+var $$ = typeof(exports) === 'object' ? exports : window;
 UTILS
-if(typeof(process)==='object'&&typeof(module)==='object'){module.exports=ACCESS_VAR};

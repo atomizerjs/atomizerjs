@@ -1,7 +1,7 @@
 var fs = require('fs');
 var path = require('path');
 
-exports.compileUtils = function(version, filePaths, accessVariable, keys, out) {
+exports.compileUtils = function(version, filePaths, keys, out) {
     var v;
     var pkg = '../../package.json';
     try {
@@ -19,9 +19,6 @@ exports.compileUtils = function(version, filePaths, accessVariable, keys, out) {
     if (!Array.isArray(filePaths) || filePaths.length === 0) {
         throw new Error('invalidParameter');
     }
-    if (!accessVariable || typeof(accessVariable) !== 'string') {
-        throw new Error('invalidParameter');
-    }
     if (keys && !Array.isArray(keys)) {
         throw new Error('invalidParameter');
     }
@@ -32,9 +29,8 @@ exports.compileUtils = function(version, filePaths, accessVariable, keys, out) {
     filePaths = normalizePaths(filePaths);
     var o = toSingleObj(filePaths);
     var accKeys = [];
-    var b = toBundleStr(o, keys, accessVariable, accKeys);
+    var b = toBundleStr(o, keys, accKeys);
     var code = fs.readFileSync(path.join(__dirname, 'template.js'), 'utf8');
-    code = code.replace(/ACCESS_VAR/g, accessVariable);
     code = replaceUtils(code, b);
     code = code.replace(/\{0\}/, v);
     code = code.replace(/\{1\}/, accKeys.join(','));
@@ -80,7 +76,7 @@ function toSingleObj(filePaths) {
     });
     return o;
 }
-function toBundleStr(obj, keys, accessVariable, accKeys) {
+function toBundleStr(obj, keys, accKeys) {
     var b = '';
     var dup = {};
     if (Array.isArray(keys) && keys.length > 0) {
@@ -101,17 +97,17 @@ function toBundleStr(obj, keys, accessVariable, accKeys) {
             }
             accKeys.push(k);
             var v = obj[k];
-            b += accessVariable + '.' + k + ' = ' + compileModuleValue(k, v, accessVariable) + ';\n';
+            b += '$$.' + k + ' = ' + compileModuleValue(k, v) + ';\n';
         }
     }
     return b ? b.slice(0, -1) : '';
 }
-function compileModuleValue(key, value, accessVariable) {
+function compileModuleValue(key, value) {
     if (!value) {
         return value;
     }
     if (typeof(value) === 'function') {
-        return stringifyScript(fnToStr(key, value, accessVariable), accessVariable);
+        return stringifyScript(fnToStr(key, value));
     }
     else if (typeof(value) === 'object') {
         return compileModuleObjectValue(value);
@@ -141,12 +137,12 @@ function compileModuleObjectValue(obj, accessVariable) { // REKURZIA
     }
     return line + '}';
 }
-function stringifyScript(input, accessVariable) {
+function stringifyScript(input) {
     var last = '';
     return ('\n' + input + '\n').replace(/(?:(^|[-+([{}=,:;!%^&*|?~]|\/(?![/*])|return|throw)(?:\s|\/\/[^\n]*\n|\/\*(?:[^*]|\*(?!\/))*\*\/)*(\/(?![/*])(?:\\[^\n]|[^[\n/\\]|\[(?:\\[^\n]|[^\]])+)+\/)|(^|'(?:\\[\s\S]|[^\n'\\])*'|"(?:\\[\s\S]|[^\n"\\])*"|([0-9A-Za-z_$]+)|([-+]+)|.))(?:\s|\/\/[^\n]*\n|\/\*(?:[^*]|\*(?!\/))*\*\/)*/g, function(str, context, exp, result, word, operator) {
         if (word) {
-            if (accessVariable && word == 'exports') {
-                result = accessVariable;
+            if (word == 'exports') {
+                result = '$$';
             }
             result = (last == 'word' || last == 'return' ? ' ' : '') + result;
             last = (word == 'return' || word == 'throw' || word == 'break') ? 'return' : 'word';
@@ -164,7 +160,7 @@ function stringifyScript(input, accessVariable) {
         return result;
     });
 }
-function fnToStr(key, fn, accessVariable) {
+function fnToStr(key, fn) {
     var b = fn.toString();
     b = 'function' + b.slice(b.match(/\(.*\)/).index); // REMOVE NAME FROM NAMED FUNCTION, E.G. Error2, ErrorBuilder ETC. FIXES FN NAME DISPLAYED IN BROWSER INSPECTOR
     var len = Object.keys(fn.prototype).length;
@@ -178,7 +174,7 @@ function fnToStr(key, fn, accessVariable) {
         }
         if (proto) {
             proto = proto.slice(0, -1);
-            b += ';' + accessVariable + '.' + key + '.prototype={' + proto + '}';
+            b += ';$$.' + key + '.prototype={' + proto + '}';
         }
     }
     return b;
