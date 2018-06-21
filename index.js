@@ -120,7 +120,7 @@ function compileModuleValue(key, value) {
     }
     return value;
 }
-function compileModuleObjectValue(obj, accessVariable) { // REKURZIA
+function compileModuleObjectValue(obj) { // REKURZIA
     if (obj instanceof Date) {
         return obj.getTime();
     }
@@ -131,7 +131,7 @@ function compileModuleObjectValue(obj, accessVariable) { // REKURZIA
         if (obj.hasOwnProperty(k)) {
             i++;
             var v = obj[k];
-            v = compileModuleValue(k, v, accessVariable);
+            v = compileModuleValue(k, v);
             line += k + ':' + v + (i == len ? '' : ',');
         }
     }
